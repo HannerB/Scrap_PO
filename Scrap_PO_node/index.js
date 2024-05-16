@@ -1,4 +1,5 @@
 import puppeteer from 'puppeteer';
+import os from 'os';
 
 // Función para lanzar el navegador
 async function launchBrowser(executablePath, userDataDir) {
@@ -32,9 +33,17 @@ async function extractDataFromPage(page, url, teamSelector, quotaSelector) {
 }
 
 // Función para obtener datos de una página específica
-async function getDataFromPage(url, teamSelector, quotaSelector, executablePath, userDataDir) {
+async function getDataFromPage(url, teamSelector, quotaSelector) {
     let browser;
     try {
+        const executablePath = os.platform() === 'darwin' ? 
+            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : // macOS
+            'C:\\Users\\hanne\\Slimjet\\slimjet.exe'; // Windows
+        
+        const userDataDir = os.platform() === 'darwin' ?
+            '/Users/tu_usuario/Library/Application Support/Google/Chrome/Default' : // macOS
+            'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1'; // Windows
+
         browser = await launchBrowser(executablePath, userDataDir);
         const page = await browser.newPage();
 
@@ -67,10 +76,8 @@ export async function getDataFromFirstPage() {
     const url = 'https://betplay.com.co/apuestas#sports-hub/basketball/nba';
     const teamSelector = 'div.KambiBC-event-participants__name--team-logo';
     const quotaSelector = 'div.eMQclt';
-    const executablePath = 'C:\\Users\\hanne\\Slimjet\\slimjet.exe';
-    const userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1';
 
-    return await getDataFromPage(url, teamSelector, quotaSelector, executablePath, userDataDir);
+    return await getDataFromPage(url, teamSelector, quotaSelector);
 }
 
 // Función para obtener datos de la segunda página
@@ -78,8 +85,6 @@ export async function getDataFromSecondPage() {
     const url = 'https://www.rushbet.co/?page=sportsbook&group=1000093652&type=matches';
     const teamSelector = 'div.sc-dovDVA.ckPsfI';
     const quotaSelector = 'li.sc-bYXICO.fCeFYa';
-    const executablePath = 'C:\\Users\\hanne\\Slimjet\\slimjet.exe';
-    const userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1';
 
-    return await getDataFromPage(url, teamSelector, quotaSelector, executablePath, userDataDir);
+    return await getDataFromPage(url, teamSelector, quotaSelector);
 }
