@@ -20,14 +20,18 @@ function ScrapComponent() {
             // Realizar la solicitud a la API para la primera página
             const response1 = await fetch('http://localhost:3001/datos-web');
             const data1 = await response1.json();
-            const formattedData1 = data1.map(item => `${item.team} - ${item.quota}`);
-            setDatosPrimeraPagina(formattedData1);
 
             // Realizar la solicitud a la API para la segunda página
             const response2 = await fetch('http://localhost:3001/datos-web-segunda-pagina');
             const data2 = await response2.json();
-            const formattedData2 = data2.map(item => `${item.team} - ${item.quota}`);
-            setDatosSegundaPagina(formattedData2);
+
+            // Emparejar los datos de las dos páginas
+            const pairedData = data1.map((item, index) => ({
+                firstPageData: item,
+                secondPageData: data2[index]
+            }));
+
+            setDatosPrimeraPagina(pairedData);
         } catch (error) {
             // Manejar errores de la solicitud
             console.error('Ocurrió un error al obtener los datos:', error);
@@ -51,20 +55,12 @@ function ScrapComponent() {
                 <>
                     {datosPrimeraPagina && (
                         <>
-                            <h2>Datos de la primera página:</h2>
+                            <h2>Datos de ambas páginas:</h2>
                             <ul>
-                                {datosPrimeraPagina.map((dato, index) => (
-                                    <li key={index}>{dato}</li>
-                                ))}
-                            </ul>
-                        </>
-                    )}
-                    {datosSegundaPagina && (
-                        <>
-                            <h2>Datos de la segunda página:</h2>
-                            <ul>
-                                {datosSegundaPagina.map((dato, index) => (
-                                    <li key={index}>{dato}</li>
+                                {datosPrimeraPagina.map((pair, index) => (
+                                    <li key={index}>
+                                        {pair.firstPageData.team} - {pair.firstPageData.quota} - {pair.secondPageData.team} - {pair.secondPageData.quota}
+                                    </li>
                                 ))}
                             </ul>
                         </>
