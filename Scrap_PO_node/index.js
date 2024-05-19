@@ -6,7 +6,17 @@ async function launchBrowser(executablePath, userDataDir) {
     return await puppeteer.launch({
         headless: true, // Cambiar a false para ver el navegador en acción
         executablePath: executablePath,
-        userDataDir: userDataDir
+        userDataDir: userDataDir,
+        args: [
+            '--no-sandbox',
+            '--disable-setuid-sandbox',
+            '--disable-dev-shm-usage',
+            '--disable-accelerated-2d-canvas',
+            '--no-first-run',
+            '--no-zygote',
+            '--single-process', // Para Windows
+            '--disable-gpu'
+        ]
     });
 }
 
@@ -36,13 +46,19 @@ async function extractDataFromPage(page, url, teamSelector, quotaSelector) {
 async function getDataFromPage(url, teamSelector, quotaSelector) {
     let browser;
     try {
-        const executablePath = os.platform() === 'darwin' ? 
-            '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome' : // macOS
-            'C:\\Users\\hanne\\Slimjet\\slimjet.exe'; // Windows
-        
-        const userDataDir = os.platform() === 'darwin' ?
-            '/Users/tu_usuario/Library/Application Support/Google/Chrome/Default' : // macOS
-            'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1'; // Windows
+        let executablePath, userDataDir;
+
+        if (os.platform() === 'darwin') {
+            // Configuración para macOS
+            executablePath = '/Applications/Firefox.app/Contents/MacOS/firefox';
+            userDataDir = '/Users/tu_usuario/Library/Application Support/Firefox/Profiles';
+        } else if (os.platform() === 'win32') {
+            // Configuración para Windows
+            executablePath = 'C:\\Users\\hanne\\Slimjet\\slimjet.exe';
+            userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1';
+        } else {
+            throw new Error('Sistema operativo no compatible.');
+        }
 
         browser = await launchBrowser(executablePath, userDataDir);
         const page = await browser.newPage();
