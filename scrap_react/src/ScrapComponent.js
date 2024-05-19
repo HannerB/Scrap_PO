@@ -1,65 +1,97 @@
 import React, { useState } from 'react';
 
 function ScrapComponent() {
+    const [datosCombinados, setDatosCombinados] = useState(null);
     const [datosPrimeraPagina, setDatosPrimeraPagina] = useState(null);
     const [datosSegundaPagina, setDatosSegundaPagina] = useState(null);
     const [buscando, setBuscando] = useState(false);
     const [horaInicio, setHoraInicio] = useState(null);
     const [horaFin, setHoraFin] = useState(null);
 
-    const fetchData = async () => {
-        // Establecer los datos en null para borrar los datos antiguos
+    const fetchData = async (fetchFirstPage = true, fetchSecondPage = true) => {
         setDatosPrimeraPagina(null);
         setDatosSegundaPagina(null);
-        // Indicar que se está realizando la búsqueda
+        setDatosCombinados(null);
         setBuscando(true);
-        // Establecer la hora de inicio de la búsqueda
         setHoraInicio(new Date());
 
         try {
-            // Realizar la solicitud a la API para la primera página
-            const response1 = await fetch('http://localhost:3001/datos-web');
-            const data1 = await response1.json();
+            let data1 = [];
+            let data2 = [];
 
-            // Realizar la solicitud a la API para la segunda página
-            const response2 = await fetch('http://localhost:3001/datos-web-segunda-pagina');
-            const data2 = await response2.json();
+            if (fetchFirstPage) {
+                const response1 = await fetch('http://localhost:3001/datos-web');
+                data1 = await response1.json();
+            }
 
-            // Emparejar los datos de las dos páginas
-            const pairedData = data1.map((item, index) => ({
-                firstPageData: item,
-                secondPageData: data2[index]
-            }));
+            if (fetchSecondPage) {
+                const response2 = await fetch('http://localhost:3001/datos-web-segunda-pagina');
+                data2 = await response2.json();
+            }
 
-            setDatosPrimeraPagina(pairedData);
+            if (fetchFirstPage && fetchSecondPage) {
+                const pairedData = data1.map((item, index) => ({
+                    firstPageData: item,
+                    secondPageData: data2[index] || {}
+                }));
+                setDatosCombinados(pairedData);
+            } else if (fetchFirstPage) {
+                setDatosPrimeraPagina(data1);
+            } else if (fetchSecondPage) {
+                setDatosSegundaPagina(data2);
+            }
         } catch (error) {
-            // Manejar errores de la solicitud
             console.error('Ocurrió un error al obtener los datos:', error);
         } finally {
-            // Indicar que se ha completado la búsqueda
             setBuscando(false);
-            // Establecer la hora de finalización de la búsqueda
             setHoraFin(new Date());
         }
     };
 
-    // Renderizar los datos en tu componente
     return (
         <div>
             {!buscando && (
-                <button onClick={fetchData}>Obtener datos</button>
+                <>
+                    <button onClick={() => fetchData(true, true)}>Obtener datos de ambas páginas</button>
+                    <button onClick={() => fetchData(true, false)}>Obtener datos de la primera página</button>
+                    <button onClick={() => fetchData(false, true)}>Obtener datos de la segunda página</button>
+                </>
             )}
             {buscando ? (
                 <p>Buscando resultados...</p>
             ) : (
                 <>
-                    {datosPrimeraPagina && (
+                    {datosCombinados && (
                         <>
                             <h2>Datos de ambas páginas:</h2>
                             <ul>
-                                {datosPrimeraPagina.map((pair, index) => (
+                                {datosCombinados.map((pair, index) => (
                                     <li key={index}>
                                         {pair.firstPageData.team} - {pair.firstPageData.quota} - {pair.secondPageData.team} - {pair.secondPageData.quota}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                    {datosPrimeraPagina && !datosCombinados && (
+                        <>
+                            <h2>Datos de la primera página:</h2>
+                            <ul>
+                                {datosPrimeraPagina.map((item, index) => (
+                                    <li key={index}>
+                                        {item.team} - {item.quota}
+                                    </li>
+                                ))}
+                            </ul>
+                        </>
+                    )}
+                    {datosSegundaPagina && !datosCombinados && (
+                        <>
+                            <h2>Datos de la segunda página:</h2>
+                            <ul>
+                                {datosSegundaPagina.map((item, index) => (
+                                    <li key={index}>
+                                        {item.team} - {item.quota}
                                     </li>
                                 ))}
                             </ul>
