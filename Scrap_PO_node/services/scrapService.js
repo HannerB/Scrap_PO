@@ -15,13 +15,13 @@ export const fetchScrapData = async (fetchFirstPage, fetchSecondPage) => {
     if (fetchSecondPage) {
         const data2 = await getDataFromPage(
             'https://www.rushbet.co/?page=sportsbook&group=1000093652&type=matches',
-            'div.sc-dovDVA.ckPsfI',
-            'li.sc-bYXICO.fCeFYa'
+            'div.sc-iUIdfH.eZBNex',
+            'li.sc-iPbnTF.fPkrAH'   
         );
         data2.forEach((data, index) => {
             if (results[index]) {
                 results[index].secondPageData = data;
-            } else {
+            } else {    
                 results.push({ secondPageData: data });
             }
         });
