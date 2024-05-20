@@ -1,5 +1,5 @@
 Back.
-- nmp install
+- npm install
 - npm install puppeteer
 - npm install express puppeteer-core
   (Para inicializar)
