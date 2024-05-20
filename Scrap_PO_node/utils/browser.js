@@ -6,8 +6,8 @@ export const launchBrowser = async () => {
     let userDataDir;
 
     if (os.platform() === 'darwin') {
-        executablePath = '/Applications/Firefox.app/Contents/MacOS/firefox';
-        userDataDir = '/Users/tu_usuario/Library/Application Support/Firefox/Profiles';
+        executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
+        userDataDir = '/Users/tu_usuario/Library/Application Support/Google/Chrome/Default';
     } else if (os.platform() === 'win32') {
         executablePath = 'C:\\Users\\hanne\\Slimjet\\slimjet.exe';
         userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1';
