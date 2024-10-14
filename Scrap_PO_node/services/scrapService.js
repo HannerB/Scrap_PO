@@ -6,8 +6,8 @@ export const fetchScrapData = async (fetchFirstPage, fetchSecondPage) => {
     if (fetchFirstPage) {
         const data1 = await getDataFromPage(
             'https://betplay.com.co/apuestas#sports-hub/basketball/nba',
-            'div.KambiBC-event-participants__name--team-logo',
-            'div.eMQclt'
+            'div.KambiBC-event-participants__name.KambiBC-event-participants__name--team-logo',
+            'div.sc-kAyceB.dwQxLC'
         );
         results.push(...data1.map(data => ({ firstPageData: data })));
     }
@@ -15,8 +15,8 @@ export const fetchScrapData = async (fetchFirstPage, fetchSecondPage) => {
     if (fetchSecondPage) {
         const data2 = await getDataFromPage(
             'https://www.rushbet.co/?page=sportsbook&group=1000093652&type=matches',
-            'div.sc-iUIdfH.eZBNex',
-            'li.sc-iPbnTF.fPkrAH'   
+            'div.sc-dVgCjU.dMlFJv',
+            'li.sc-lfVKn.efHajZ'   
         );
         data2.forEach((data, index) => {
             if (results[index]) {
@@ -32,7 +32,7 @@ export const fetchScrapData = async (fetchFirstPage, fetchSecondPage) => {
 
 const getDataFromPage = async (url, teamSelector, quotaSelector) => {
     let browser;
-    try {
+    try {   
         browser = await launchBrowser();
         const page = await browser.newPage();
         await page.setRequestInterception(true);

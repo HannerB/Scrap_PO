@@ -4,7 +4,6 @@ import ScrapComponent from './components/ScrapComponent'; // Asegúrate de ajust
 function AppComponent() {
     return (
         <div>
-            <h1>Aplicación Principal</h1>
             <ScrapComponent />
         </div>
     );

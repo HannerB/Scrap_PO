@@ -8,15 +8,15 @@ export const launchBrowser = async () => {
     if (os.platform() === 'darwin') {
         executablePath = '/Applications/Google Chrome.app/Contents/MacOS/Google Chrome';
         userDataDir = '/Users/tu_usuario/Library/Application Support/Google/Chrome/Default';
-    } else if (os.platform() === 'win32') {
-        executablePath = 'C:\\Users\\hanne\\Slimjet\\slimjet.exe';
-        userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\Slimjet\\User Data\\Persona 1';
+    } else if (os.platform() === 'win32') { 
+        executablePath = 'C:\\Program Files\\BraveSoftware\\Brave-Browser\\Application\\brave.exe';  
+        userDataDir = 'C:\\Users\\hanne\\AppData\\Local\\BraveSoftware\\Brave-Browser\\User Data\\Default'; 
     } else {
         throw new Error('Sistema operativo no compatible.');
     }
 
     return await puppeteer.launch({
-        headless: true,
+        headless: false,
         executablePath,
         userDataDir
     });
